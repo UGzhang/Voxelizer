@@ -1,0 +1,24 @@
+﻿BasedOnStyle: Google
+PointerAlignment: Right
+ColumnLimit: 100
+IndentWidth: 2
+MaxEmptyLinesToKeep: 2
+ObjCSpaceAfterProperty: true
+ObjCBlockIndentWidth: 2
+AllowShortFunctionsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: true
+AlignTrailingComments: true
+#AlignOperands: true
+SpacesInSquareBrackets: false
+SpacesInParentheses : false
+AlignConsecutiveDeclarations: false
+AlignConsecutiveAssignments: false
+SpaceBeforeAssignmentOperators: true
+SpacesInContainerLiterals: true
+IndentWrappedFunctionNames: true
+KeepEmptyLinesAtTheStartOfBlocks: true
+BreakConstructorInitializersBeforeComma: true
+AllowAllParametersOfDeclarationOnNextLine: true
+SpaceAfterCStyleCast: false
+TabWidth: 4
+UseTab: Never
