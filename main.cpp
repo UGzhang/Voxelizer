@@ -128,7 +128,7 @@ void loadMesh(vector<RFVector3d> &kMeshVertices, RFAABB3d &kAabb, std::string fi
 
 void outputOBJ(std::vector<RFVector3d> &kOutputVertices, std::vector<RFVector3ui> &kOutFaces) {
   TIMEIT();
-  ofstream kOut("Output.obj");
+  ofstream kOut("../output/Output.obj");
   for (auto &vert : kOutputVertices) {
     kOut << "v"
          << " " << vert.tX << " " << vert.tY << " " << vert.tZ << endl;
@@ -144,7 +144,7 @@ void outputOBJ(std::vector<RFVector3d> &kOutputVertices, std::vector<RFVector3ui
 }
 
 int main() {
-  Instrumentor::Get().BeginSession("timeAnalysis");
+  Instrumentor::Get().BeginSession("timeAnalysis", "../output/timeAnalysis.json");
   vector<RFVector3d> kMeshVertices;
   RFAABB3d kAabb;
   std::vector<RFVector3d> kOutputVertices;
