@@ -9,17 +9,18 @@ set (TARGET_NAME "SolidVoxelization")
 
 include_directories (
 	Math
+	include
 )
 
 set (SOURCE_FILES
-	RFIntersectionTests.h
-	RFIntersectionTests.cpp
 	main.cpp
-	RFVoxelOctree.h
-	RFVoxelOctree.cpp
-	RFVoxelOctreeBuilder.h
-	RFVoxelOctreeBuilder.cpp
+	src/RFIntersectionTests.cpp
+	src/RFVoxelOctree.cpp
+	src/RFVoxelOctreeBuilder.cpp
 	Math/TRFVectors.cpp
+	include/RFIntersectionTests.h
+	include/RFVoxelOctree.h
+	include/RFVoxelOctreeBuilder.h
 )
 
 # Add definitions.

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "RFVoxelOctree.h"
 #include <vector>
 
@@ -11,16 +10,10 @@ namespace RFAxl
 	public:
 		RFVoxelOctreeBuilder();
 		~RFVoxelOctreeBuilder();
-		RFVoxelOctree *CreateOctree(
-			const std::vector<RFMath::RFVector3d> &kMeshVertices,
-			const RFMath::RFAABB3d kMeshAabb, 
-			const double fVoxelSize = 1.0, 
-			const double fMinCoverage = 0.9, 
-			const double fBorderSize = 0.0);
 
 		RFVoxelOctree *CreateOctree(const std::vector<RFMath::RFVector3d> &kMeshVertices,
                                     const RFMath::RFAABB3d kMeshAabb,
-									const uint32_t kOctreeDim,
+									const int kOctreeDim,
                                     const double fMinCoverage = 0.9,
                                     const double fBorderSize = 0.0);
 

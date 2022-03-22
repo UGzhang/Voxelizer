@@ -1,12 +1,11 @@
-
 #include "RFVoxelOctreeBuilder.h"
-
 #include "RFIntersectionTests.h"
-
 
 using namespace std;
 using namespace RFMath;
 using namespace RFAxl;
+
+
 
 
 // 127 --> 128
@@ -36,7 +35,7 @@ uint32 GetOrderOfTwo(uint32 ui) {
   if (ui == 1) return 0;
 
   while (ui > 1) {
-    ui = ui >> 1;  //右移 -> 除以2的1次方
+    ui = ui >> 1;  
     count++;
   }
   return count;
@@ -75,83 +74,29 @@ RFVoxelOctreeBuilder::RFVoxelOctreeBuilder() : m_pkVoxelOctree(nullptr) {
 
 RFVoxelOctreeBuilder::~RFVoxelOctreeBuilder() {}
 
-RFVoxelOctree *RFVoxelOctreeBuilder::CreateOctree(
-    const std::vector<RFMath::RFVector3d> &kMeshVertices, 
-    const RFMath::RFAABB3d kMeshAabb,
-    const double fVoxelSize, 
-    const double fMinCoverage, 
-    const double fBorderSize) {
-  m_pkVoxelOctree = new RFVoxelOctree;
-  m_pkVoxelOctree->m_fVoxelSize = fVoxelSize;
-  const double fInvVoxelSize = 1.0f / fVoxelSize;
 
-  // 1) Scale the aabb with the inv-voxelsize to find the correct octree dim in
-  // voxel dimensions
-  RFAABB3d kAABB = kMeshAabb;
-  kAABB.kMin *= fInvVoxelSize;
-  kAABB.kMax *= fInvVoxelSize;
-
-  // 2) Find the longest axis
-  RFVector3d kDim = kAABB.kMax - kAABB.kMin;
-  uint uiMaxIndex = VectorIndexOfMaxAbsComponent(kDim);
-  //float fMaxDim = kDim[uiMaxIndex] + fBorderSize;
-  double fMaxDim = kDim[uiMaxIndex];
-  m_pkVoxelOctree->m_uiOctreeDim = GetNextPowerOfTwo(static_cast<uint>(fMaxDim));
-
-  double fOctreeWorldSize = static_cast<double>(m_pkVoxelOctree->m_uiOctreeDim) * fVoxelSize;
-  m_pkVoxelOctree->m_kOctreeOrigin = kMeshAabb.GetCenter() - RFVector3d(fOctreeWorldSize / 2.0f);
-
-  // 3) Create the initial index list, so here we assume that the vertices's are
-  // ordered in triangles [v0,v1,v2] ...
-  std::vector<uint> kTriangleIndexList;
-  for (uint i = 0; i < kMeshVertices.size(); i += 3) {
-    kTriangleIndexList.push_back(i);
-  }
-
-  // 4) Create the octree root
-  RFAABB3d kRootAabb;
-  kRootAabb.kMin = m_pkVoxelOctree->m_kOctreeOrigin;
-  kRootAabb.kMax = m_pkVoxelOctree->m_kOctreeOrigin + RFVector3d(fOctreeWorldSize);
-
-  m_pkVoxelOctree->m_kDataDimension = RFVector3i(static_cast<int>(m_pkVoxelOctree->m_uiOctreeDim));
-  m_pkVoxelOctree->m_pkRoot = new RFVoxelOctreeNode;
-  m_pkVoxelOctree->m_pkRoot->m_kWorldAabb = kRootAabb;
-  m_pkVoxelOctree->m_pkRoot->m_kBuildAabb.kMin = RFVector3i(0);
-  m_pkVoxelOctree->m_pkRoot->m_kBuildAabb.kMax =
-      RFVector3i(static_cast<int>(m_pkVoxelOctree->m_uiOctreeDim));
-
-  // 5) Subdivide
-  Subdivide(m_pkVoxelOctree->m_pkRoot, kMeshVertices, kTriangleIndexList);
-  UpdateInternalEmptyLeafsSign(m_pkVoxelOctree->m_pkRoot, m_pkVoxelOctree->m_pkRoot, fMinCoverage);
-  UpdateOctreeStats(m_pkVoxelOctree);
-
-  return m_pkVoxelOctree;
-}
-
-
-// add CreateOctree method in 2022.2.15 Aaron
 // use Vertices, AABB box, dim
 RFVoxelOctree* RFVoxelOctreeBuilder::CreateOctree(
     const std::vector<RFMath::RFVector3d>& kMeshVertices,
     const RFMath::RFAABB3d kMeshAabb,
-    const uint32_t kOctreeDim, 
+    const int kOctreeDim, 
     const double fMinCoverage, 
     const double fBorderSize ){
 
-  m_pkVoxelOctree = new RFVoxelOctree;
-  m_pkVoxelOctree->m_uiOctreeDim = GetNextPowerOfTwo(kOctreeDim);
-
+  // 1) Find the longest axis from AABB and find the octree dimension
   RFVector3d kDim = kMeshAabb.kMax - kMeshAabb.kMin;
   uint uiMaxIndex = VectorIndexOfMaxAbsComponent(kDim);
   double fMaxDim = kDim[uiMaxIndex];
-  m_pkVoxelOctree->m_fVoxelSize = fMaxDim / m_pkVoxelOctree->m_uiOctreeDim;
+  m_pkVoxelOctree = new RFVoxelOctree;
+  m_pkVoxelOctree->m_uiOctreeDim = GetNextPowerOfTwo(kOctreeDim);
 
+  // 2) Find the Octree Origin
+  m_pkVoxelOctree->m_fVoxelSize = fMaxDim / m_pkVoxelOctree->m_uiOctreeDim;
   double fOctreeWorldSize =
       static_cast<double>(m_pkVoxelOctree->m_uiOctreeDim) * m_pkVoxelOctree->m_fVoxelSize;
-
   m_pkVoxelOctree->m_kOctreeOrigin = kMeshAabb.GetCenter() - RFVector3d(fOctreeWorldSize / 2.0f);
 
-    // 3) Create the initial index list, so here we assume that the vertices's are
+  // 3) Create the initial index list, so here we assume that the vertices's are
   // ordered in triangles [v0,v1,v2] ...
   std::vector<uint> kTriangleIndexList;
   for (uint i = 0; i < kMeshVertices.size(); i += 3) {

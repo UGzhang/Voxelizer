@@ -14,10 +14,21 @@
 
 #include "RFVoxelOctree.h"
 #include "RFVoxelOctreeBuilder.h"
+#include "Instrumentor.h"
 
 using namespace std;
 using namespace RFMath;
 using namespace RFAxl;
+
+
+#define USE_TIMEIT 1
+
+#if USE_TIMEIT
+#define TIMEIT() InstrumentationTimer timer(__FUNCTION__);
+#define TIMEITNAME(name) InstrumentationTimer timer(name);
+#else
+#define TIMEIT()
+#endif
 
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #define min(a, b) (((a) < (b)) ? (a) : (b))
@@ -34,31 +45,13 @@ void TraverseOctree(
 
   if (pkNode->m_eNodeType == NT_LEAF) {
     pkNode->GetNodeVerticeFace(kVertices, kFaces);
-    //RFVector3f kVert = pkNode->m_kWorldAabb.GetCenter();
-    //kVertices.push_back(kVert);
-
-    //float fDist = pkNode->m_fDistanceToSurface;
-    //float fVal = -fDist * 200.0f;
-    //uint kColor = static_cast<uint>(min(255.0f, max(0.0f, fVal)));
-    //kColors.push_back(RFVector3ui(kColor));
     return;
   }
 
   if (pkNode->m_eNodeType == NT_EMPTY_LEAF) {
     if (pkNode->m_fDistanceToSurface < 0.0f) {
-
         pkNode->GetNodeVerticeFace(kVertices, kFaces);
-     /* RFVector3f kVert = pkNode->m_kWorldAabb.GetCenter();
-
-      if (pkNode->m_kBuildAabb.GetWidth() > 1) {
-        kVertices.push_back(kVert);
-        kColors.push_back(RFVector3ui(0, 255, 0));
-      } else {
-        kVertices.push_back(kVert);
-        kColors.push_back(RFVector3ui(0, 0, 255));
-      }*/
     }
-
     return;
   }
 
@@ -69,13 +62,13 @@ void TraverseOctree(
   }
 }
 
-int main(int argc, char **argv) {
+void loadMesh(vector<RFVector3d> &kMeshVertices, RFAABB3d &kAabb, std::string filePath) {
+  TIMEIT();
   vector<RFVector3d> kVertices;
   vector<RFVector3i> kFaces;
-  vector<RFVector3d> kMeshVertices;  // stored triangle wise (v0,v1,v2)...
 
-   //fstream kIn( "../Armadillo.obj" );
-  fstream kIn("E:\\data\\temp\\sphere.obj");
+  fstream kIn( filePath );
+  //fstream kIn("E:\\data\\temp\\cube.obj");
 
   if (!kIn) {
     cout << "unable to load mesh" << endl;
@@ -89,7 +82,7 @@ int main(int argc, char **argv) {
     kIn >> kString;
     if (kString == g_kVert) {
       for (int i = 0; i < 3; ++i) {
-        kIn >> kValues[i] ;
+        kIn >> kValues[i];
       }
       kVertices.push_back(RFVector3d(static_cast<double>(atof(kValues[0].c_str())),
                                      static_cast<double>(atof(kValues[1].c_str())),
@@ -111,13 +104,13 @@ int main(int argc, char **argv) {
   // Create the vertex list
   for (uint i = 0; i < static_cast<uint>(kFaces.size()); ++i) {
     RFVector3i &kFace = kFaces[i];
-    // notice the notorious obj index from 1!!!!
+    // notice the notorious obj index from 1!
     kMeshVertices.push_back(kVertices[kFace.tX - 1]);
     kMeshVertices.push_back(kVertices[kFace.tY - 1]);
     kMeshVertices.push_back(kVertices[kFace.tZ - 1]);
   }
 
-  RFAABB3d kAabb;
+
   kAabb.kMax = RFVectors3d::MIN;
   kAabb.kMin = RFVectors3d::MAX;
 
@@ -129,31 +122,13 @@ int main(int argc, char **argv) {
       kAabb.kMax[j] = max(kAabb.kMax[j], kVert[j]);
     }
   }
+  cout << "Load obj file successfully" << endl;
+}
 
+
+void outputOBJ(std::vector<RFVector3d> &kOutputVertices, std::vector<RFVector3ui> &kOutFaces) {
+  TIMEIT();
   ofstream kOut("Output.obj");
-
-  RFVoxelOctreeBuilder kVoxelBuilder;
-  //RFVoxelOctree *pkVoxelOctree = kVoxelBuilder.CreateOctree(kMeshVertices, kAabb, 0.01, 0.9);
-  RFVoxelOctree *pkVoxelOctree = kVoxelBuilder.CreateOctree(kMeshVertices, kAabb, static_cast<uint32>(60));
-  //RFVoxelOctree *pkVoxelOctree = kVoxelBuilder.CreateOctree(kMeshVertices, kAabb, 0.01f, 0.8f);
-
-  std::vector<RFVector3d> kOutputVertices;
-  std::vector<RFVector3ui> kOutFaces;
-
-  TraverseOctree(pkVoxelOctree->m_pkRoot, kOutputVertices, kOutFaces);
-
-  //kOut << "ply" << endl;
-  //kOut << "format ascii 1.0" << endl;
-  //kOut << "comment made by CG alexandra" << endl;
-  //kOut << "element vertex " << kOutputVertices.size() << endl;
-  //kOut << "property float x" << endl;
-  //kOut << "property float y" << endl;
-  //kOut << "property float z" << endl;
-  //kOut << "property uchar red" << endl;
-  //kOut << "property uchar green" << endl;
-  //kOut << "property uchar blue" << endl;
-  //kOut << "end_header" << endl;
-
   for (auto &vert : kOutputVertices) {
     kOut << "v"
          << " " << vert.tX << " " << vert.tY << " " << vert.tZ << endl;
@@ -161,19 +136,35 @@ int main(int argc, char **argv) {
 
   for (auto &face : kOutFaces) {
     kOut << "f"
-         << " "<< face.tX << " " << face.tY << " " << face.tZ << endl;
+         << " " << face.tX << " " << face.tY << " " << face.tZ << endl;
   }
 
-  /*for (uint i = 0; i < static_cast<uint>(kOutputVertices.size()); ++i) {
-
-    RFVector3f &kV0 = kOutputVertices[i];
-    RFVector3ui &kFace = kOutFaces[i];
-
-    kOut << kV0.tX << " " << kV0.tY << " " << kV0.tZ << " " << kFace.tX << " " << kFace.tY << " "
-         << kFace.tZ << endl;
-    
-  }*/
-
   kOut.close();
+  cout << "Output obj file successfully" << endl;
+}
+
+int main() {
+  Instrumentor::Get().BeginSession("timeAnalysis");
+  vector<RFVector3d> kMeshVertices;
+  RFAABB3d kAabb;
+  std::vector<RFVector3d> kOutputVertices;
+  std::vector<RFVector3ui> kOutFaces;
+
+  std::string filePath = "../Armadillo.obj";
+  loadMesh(kMeshVertices, kAabb, filePath);
+
+  {
+  TIMEITNAME("BuildOctree");
+  cout << "Generate octree" << endl;
+  RFVoxelOctreeBuilder kVoxelBuilder;
+  RFVoxelOctree *pkVoxelOctree = kVoxelBuilder.CreateOctree(kMeshVertices, kAabb, 60);
+  TraverseOctree(pkVoxelOctree->m_pkRoot, kOutputVertices, kOutFaces);
+  cout << "Build octree successfully" << endl;
+  }
+  
+  outputOBJ(kOutputVertices, kOutFaces);
+
+  Instrumentor::Get().EndSession();
+
   return 1;
 }
