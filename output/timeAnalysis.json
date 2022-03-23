@@ -1,1 +1,0 @@
-{"otherData": {},"traceEvents":[{"cat":"function","dur":7313,"name":"loadMesh","ph":"X","pid":0,"tid":19859904,"ts":415239276050},{"cat":"function","dur":1082404,"name":"BuildOctree","ph":"X","pid":0,"tid":19859904,"ts":415239283426},{"cat":"function","dur":1027954,"name":"outputOBJ","ph":"X","pid":0,"tid":19859904,"ts":415240365879}]}

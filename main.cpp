@@ -131,12 +131,12 @@ void outputOBJ(std::vector<RFVector3d> &kOutputVertices, std::vector<RFVector3ui
   ofstream kOut("../output/Output.obj");
   for (auto &vert : kOutputVertices) {
     kOut << "v"
-         << " " << vert.tX << " " << vert.tY << " " << vert.tZ << endl;
+         << " " << vert.tX << " " << vert.tY << " " << vert.tZ << "\n";
   }
 
   for (auto &face : kOutFaces) {
     kOut << "f"
-         << " " << face.tX << " " << face.tY << " " << face.tZ << endl;
+         << " " << face.tX << " " << face.tY << " " << face.tZ << "\n";
   }
 
   kOut.close();
