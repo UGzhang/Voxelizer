@@ -1,5 +1,5 @@
 ## Solid Voxelization base on Octree
-*ONLY support OBJ file
+*ONLY support OBJ file  
 This program is small and no other denpendeces, so compile and build it is very fast.  
 ![slice](gif/slice.gif)
 
