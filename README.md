@@ -19,17 +19,13 @@ cd output
 
 ## Visual benchmarking
 CPU : Intel i7-12700
-### Before optimazation
+### Optimazation
 loadOBJ: 7.637 ms  
 BuildOctree: 5,841.827 ms  
-outputOBJ: 4,486.426 ms  
+outputOBJ: 1015.288ms   
 ![1647938757(1)](https://user-images.githubusercontent.com/80893143/159441957-bc644d7a-4c7c-4c12-a674-a9c6c13fae77.png)  
   
-### After optimazation
-loadOBJ: To do...  
-BuildOctree: To do...  
-outputOBJ: 1015.288ms  
-
+  
 ### About timing  
 https://www.youtube.com/watch?v=xlAH4dbMVnU&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=81
 
