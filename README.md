@@ -4,18 +4,32 @@ This program is small and no other denpendeces, so compile and build it is very 
 ![slice](gif/slice.gif)
 
 ## Build
-Successfully build in win11 / vs2019  
+Successfully build in win11 / vs2019 and Ubuntu 20.04
 ```
 mkdir build && cd build
 cmake ..
 ```
 
-## View the example
-use the SimpleViewer.exe in output file
+## Usage
 ```
-cd output
-.\SimpleViewer.exe .\Armadillo_64.obj
+$ ./SolidVoxelization -?
+
+usage: ./SolidVoxelization [options] ... 
+options:
+  -i, --input        file path (string [=./Armadillo.obj])
+  -o, --output       Output file path (string [=./Output.obj])
+  -a, --analysis     time Analysis file path (string [=./timeAnalysis.json])
+  -d, --dimension    dimension of voxelization (int [=64])
+  -?, --help         print this message
+  
+
+1. put ./Armadillo.obj and ./SolidVoxelization in same directory
+$ ./SolidVoxelization
+
+2. Specify the file
+$ ./SolidVoxelization -i "your path" -o "your path" -a "your path"
 ```
+
 
 ## Visual benchmarking
 CPU : Intel i7-12700

@@ -15,6 +15,7 @@
 #include "RFVoxelOctree.h"
 #include "RFVoxelOctreeBuilder.h"
 #include "Instrumentor.h"
+#include "cmdline.h"
 
 using namespace std;
 using namespace RFMath;
@@ -67,8 +68,8 @@ void loadMesh(vector<RFVector3d> &kMeshVertices, RFAABB3d &kAabb, std::string fi
   vector<RFVector3d> kVertices;
   vector<RFVector3i> kFaces;
 
+
   fstream kIn( filePath );
-  //fstream kIn("E:\\data\\temp\\cube.obj");
 
   if (!kIn) {
     cout << "unable to load mesh" << endl;
@@ -126,9 +127,9 @@ void loadMesh(vector<RFVector3d> &kMeshVertices, RFAABB3d &kAabb, std::string fi
 }
 
 
-void outputOBJ(std::vector<RFVector3d> &kOutputVertices, std::vector<RFVector3ui> &kOutFaces) {
+void outputOBJ(std::vector<RFVector3d> &kOutputVertices, std::vector<RFVector3ui> &kOutFaces ,string outputFath) {
   TIMEIT();
-  ofstream kOut("../output/Output.obj");
+  ofstream kOut(outputFath);
   for (auto &vert : kOutputVertices) {
     kOut << "v"
          << " " << vert.tX << " " << vert.tY << " " << vert.tZ << "\n";
@@ -143,26 +144,41 @@ void outputOBJ(std::vector<RFVector3d> &kOutputVertices, std::vector<RFVector3ui
   cout << "Output obj file successfully" << endl;
 }
 
-int main() {
-  Instrumentor::Get().BeginSession("timeAnalysis", "../output/timeAnalysis.json");
+int main(int argc, char *argv[]) {
+
+  cmdline::parser cmd;
+  cmd.add<std::string>("input", 'i', "file path", false, "./Armadillo.obj");
+  cmd.add<std::string>("output", 'o', "Output file path", false, "./Output.obj");
+  cmd.add<std::string>("analysis", 'a', "time Analysis file path", false, "./timeAnalysis.json");
+  cmd.add<int>("dimension", 'd', "dimension of voxelization", false, 64, cmdline::range(1, 65535));
+
+  cmd.parse_check(argc, argv);
+
+  std::string inputPath = cmd.get<std::string>("input");
+  std::string outputPath = cmd.get<std::string>("output");
+  std::string analysisPath = cmd.get<std::string>("analysis");
+  int dim = cmd.get<int>("dimension");
+
+  Instrumentor::Get().BeginSession("timeAnalysis", analysisPath);
+
   vector<RFVector3d> kMeshVertices;
   RFAABB3d kAabb;
   std::vector<RFVector3d> kOutputVertices;
   std::vector<RFVector3ui> kOutFaces;
 
-  std::string filePath = "../Armadillo.obj";
-  loadMesh(kMeshVertices, kAabb, filePath);
+
+  loadMesh(kMeshVertices, kAabb, inputPath);
 
   {
   TIMEITNAME("BuildOctree");
   cout << "Generate octree" << endl;
   RFVoxelOctreeBuilder kVoxelBuilder;
-  RFVoxelOctree *pkVoxelOctree = kVoxelBuilder.CreateOctree(kMeshVertices, kAabb, 60);
+  RFVoxelOctree *pkVoxelOctree = kVoxelBuilder.CreateOctree(kMeshVertices, kAabb, dim);
   TraverseOctree(pkVoxelOctree->m_pkRoot, kOutputVertices, kOutFaces);
   cout << "Build octree successfully" << endl;
   }
   
-  outputOBJ(kOutputVertices, kOutFaces);
+  outputOBJ(kOutputVertices, kOutFaces, outputPath);
 
   Instrumentor::Get().EndSession();
 

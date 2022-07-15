@@ -52,14 +52,14 @@ namespace RFMath
 	template <typename T>
 	inline T& TRFVector2<T>::operator[](int i)
 	{
-		RF_MATH_ASSERT(i >= 0 && i < 2);
+        this->RF_MATH_ASSERT(i >= 0 && i < 2);
 		return Data()[i];
 	}
 
 	template <typename T>
 	inline T TRFVector2<T>::operator[](int i) const
 	{
-		RF_MATH_ASSERT(i >= 0 && i < 2);
+		this->RF_MATH_ASSERT(i >= 0 && i < 2);
 		return Data()[i];
 	}
 

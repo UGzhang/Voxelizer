@@ -1,4 +1,7 @@
 #pragma once
+#include <cstring>
+#include <complex>
+#include <limits>
 
 namespace RFMath
 {

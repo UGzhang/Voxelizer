@@ -120,14 +120,14 @@ namespace RFMath
 	template <typename T>
 	inline T& TRFVector4<T>::operator[](int i)
 	{
-		RF_MATH_ASSERT(i >= 0 && i < 4);
+		this->RF_MATH_ASSERT(i >= 0 && i < 4);
 		return Data()[i];
 	}
 
 	template <typename T>
 	inline T TRFVector4<T>::operator[](int i) const
 	{
-		RF_MATH_ASSERT(i >= 0 && i < 4);
+		this->RF_MATH_ASSERT(i >= 0 && i < 4);
 		return Data()[i];
 	}
 
