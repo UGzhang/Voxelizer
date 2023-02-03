@@ -147,7 +147,7 @@ void outputOBJ(std::vector<RFVector3d> &kOutputVertices, std::vector<RFVector3ui
 int main(int argc, char *argv[]) {
 
   cmdline::parser cmd;
-  cmd.add<std::string>("input", 'i', "file path", false, "./Armadillo.obj");
+  cmd.add<std::string>("input", 'i', "file path", false, "../Armadillo.obj");
   cmd.add<std::string>("output", 'o', "Output file path", false, "./Output.obj");
   cmd.add<std::string>("analysis", 'a', "time Analysis file path", false, "./timeAnalysis.json");
   cmd.add<int>("dimension", 'd', "dimension of voxelization", false, 64, cmdline::range(1, 65535));

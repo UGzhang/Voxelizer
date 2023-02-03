@@ -23,9 +23,9 @@ void RFVoxelOctreeNode::GetNodeVerticeFace(
   RFVector3d v4 = m_kWorldAabb.kMin;
   RFVector3d v8 = m_kWorldAabb.kMax;
   
-  RFVector3d v3 = {v4.x + m_kWorldAabb.GetWidth(), v4.y, v4.z};
-  RFVector3d v2 = {v4.x, v4.y + m_kWorldAabb.GetHeight(), v4.z};
-  RFVector3d v1 = {v2.x + m_kWorldAabb.GetWidth(), v2.y, v2.z};
+  RFVector3d v3{v4.x + m_kWorldAabb.GetWidth(), v4.y, v4.z};
+  RFVector3d v2{v4.x, v4.y + m_kWorldAabb.GetHeight(), v4.z};
+  RFVector3d v1{v2.x + m_kWorldAabb.GetWidth(), v2.y, v2.z};
 		   
   RFVector3d v7 = {v8.x - m_kWorldAabb.GetWidth(), v8.y, v8.z};
   RFVector3d v6 = {v8.x, v8.y - m_kWorldAabb.GetHeight(), v8.z};

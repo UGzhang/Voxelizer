@@ -4,7 +4,7 @@ This program is small and no other denpendeces, so compile and build it is very 
 ![slice](gif/slice.gif)
 
 ## Build
-Successfully build in win11 / vs2019 and Ubuntu 20.04
+Successfully build in window11 (vs2019), Ubuntu 20.04 and Mac M1Pro
 ```
 mkdir build && cd build
 cmake ..
@@ -32,11 +32,13 @@ $ ./SolidVoxelization -i "your path" -o "your path" -a "your path"
 
 
 ## Visual benchmarking
-CPU : Intel i7-12700
-### Optimazation
-loadOBJ: 7.637 ms  
-BuildOctree: 5,841.827 ms  
-outputOBJ: 1015.288ms   
+Env: Apple M1 Pro with 8 CPU, 14 GPU, 32G and 1T ssd
+Test File: Armadillo.obj  
+
+### Before Optimazation
+loadOBJ: 4.520ms  
+BuildOctree: 483.902ms  
+outputOBJ: 133.618ms   
 ![1647938757(1)](https://user-images.githubusercontent.com/80893143/159441957-bc644d7a-4c7c-4c12-a674-a9c6c13fae77.png)  
   
   
