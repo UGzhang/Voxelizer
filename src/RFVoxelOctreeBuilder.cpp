@@ -174,7 +174,7 @@ void RFVoxelOctreeBuilder::Subdivide(RFVoxelOctreeNode *pkParentNode,
       kTriangleVerts[2] = kMeshVertices[uiTriIndex + 2];
 
       if (TriangleAabbIntersects(kTriangleVerts, kWorldAabb)) {
-        kChildTriangleIndices.push_back(uiTriIndex);
+        kChildTriangleIndices.emplace_back(uiTriIndex);
       }
     }
 

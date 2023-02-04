@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.8.0)
 project (SolidVoxelization)
 
 set (TARGET_NAME "SolidVoxelization")
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 include_directories (
 	Math

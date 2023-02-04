@@ -130,16 +130,22 @@ void loadMesh(vector<RFVector3d> &kMeshVertices, RFAABB3d &kAabb, std::string fi
 void outputOBJ(std::vector<RFVector3d> &kOutputVertices, std::vector<RFVector3ui> &kOutFaces ,string outputFath) {
   TIMEIT();
   ofstream kOut(outputFath);
+  std::string str;
+//  str.resize(100000);
+
   for (auto &vert : kOutputVertices) {
-    kOut << "v"
-         << " " << vert.tX << " " << vert.tY << " " << vert.tZ << "\n";
+//    kOut << "v"
+//         << " " << vert.tX << " " << vert.tY << " " << vert.tZ << "\n";
+      str += "v " + std::to_string(vert.tX) + " " + std::to_string(vert.tY) + " " + std::to_string(vert.tZ) + "\n";
+
   }
 
   for (auto &face : kOutFaces) {
-    kOut << "f"
-         << " " << face.tX << " " << face.tY << " " << face.tZ << "\n";
+//    kOut << "f"
+//         << " " << face.tX << " " << face.tY << " " << face.tZ << "\n";
+      str += "f " + std::to_string(face.tX) + " " + std::to_string(face.tY) + " " + std::to_string(face.tZ) + "\n";
   }
-
+  kOut << str;
   kOut.close();
   cout << "Output obj file successfully" << endl;
 }

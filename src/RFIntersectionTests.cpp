@@ -105,20 +105,33 @@ bool RFAxl::RayBoxIntersection(const RFMath::RFRay3d &kRay, RFMath::RFAABB3d &kA
 
 bool RFAxl::RayBoxIntersection(const RFMath::RFRay3d &kRay, const RFMath::RFAABB3d &kAabb)
 {
-	float l1   = (kAabb.kMin.tX - kRay.kOrigin.tX) * kRay.kInvDirection.tX;
-	float l2   = (kAabb.kMax.tX - kRay.kOrigin.tX) * kRay.kInvDirection.tX;
+	auto origin = kRay.kOrigin;
+    auto kInvDir = kRay.kInvDirection;
+
+    auto kMin = kAabb.kMin;
+    auto kMax = kAabb.kMax;
+
+    double originX = origin.tX;
+    double kInvDirX = kInvDir.tX;
+
+    float l1   = (kMin.tX - originX) * kInvDirX;
+	float l2   = (kMax.tX - originX) * kInvDirX;
 
 	float tmin = min(l1,l2);
 	float tmax = max(l1,l2);
 
-	l1   = (kAabb.kMin.tY - kRay.kOrigin.tY) *  kRay.kInvDirection.tY;
-	l2   = (kAabb.kMax.tY - kRay.kOrigin.tY) *  kRay.kInvDirection.tY;
+    double originY = origin.tY;
+    double kInvDirY = kInvDir.tY;
+	l1   = (kMin.tY - originY) *  kInvDirY;
+	l2   = (kMax.tY - originY) *  kInvDirY;
 
 	tmin = max(min(l1,l2), tmin);
 	tmax = min(max(l1,l2), tmax);
 
-	l1   = (kAabb.kMin.tZ - kRay.kOrigin.tZ) * kRay.kInvDirection.tZ; 
-	l2   = (kAabb.kMax.tZ - kRay.kOrigin.tZ) * kRay.kInvDirection.tZ; 
+    double originZ = origin.tZ;
+    double kInvDirZ = kInvDir.tZ;
+	l1   = (kMin.tZ - originZ) * kInvDirZ;
+	l2   = (kMax.tZ - originZ) * kInvDirZ;
 
 	tmin = max(min(l1,l2), tmin);
 	tmax = min(max(l1,l2), tmax);
@@ -241,9 +254,10 @@ bool RFAxl::TriangleAabbIntersects(RFMath::RFVector3d kTriangleVertices[3], RFMa
 	float kBoxCenter[3];
 	float kBoxHalfSize[3];
 
-	kBoxCenter[0] = kAabb.GetCenter().tX;
-	kBoxCenter[1] = kAabb.GetCenter().tY;
-	kBoxCenter[2] = kAabb.GetCenter().tZ;
+    auto center = kAabb.GetCenter();
+	kBoxCenter[0] = center.tX;
+	kBoxCenter[1] = center.tY;
+	kBoxCenter[2] = center.tZ;
 
 	kBoxHalfSize[0] = kAabb.GetWidth() * 0.5f;
 	kBoxHalfSize[1] = kAabb.GetHeight()* 0.5f;
@@ -251,9 +265,10 @@ bool RFAxl::TriangleAabbIntersects(RFMath::RFVector3d kTriangleVertices[3], RFMa
 
 	for(unsigned int i = 0; i < 3; i++)
 	{
-		kTriVerts[i][0] = kTriangleVertices[i].tX;
-		kTriVerts[i][1] = kTriangleVertices[i].tY;
-		kTriVerts[i][2] = kTriangleVertices[i].tZ;
+      auto v = kTriangleVertices[i];
+      kTriVerts[i][0] = v.tX;
+      kTriVerts[i][1] = v.tY;
+      kTriVerts[i][2] = v.tZ;
 	}
 
 	return (TriBoxOverlap(kBoxCenter,kBoxHalfSize,kTriVerts) > 0);

@@ -40,7 +40,9 @@ loadOBJ: 4.520ms
 BuildOctree: 483.902ms  
 outputOBJ: 133.618ms   
 ![1647938757(1)](https://user-images.githubusercontent.com/80893143/159441957-bc644d7a-4c7c-4c12-a674-a9c6c13fae77.png)  
-  
+
+### Before Optimazation
+outputOBJ: 77.343 ms
   
 ### About timing  
 https://www.youtube.com/watch?v=xlAH4dbMVnU&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=81
